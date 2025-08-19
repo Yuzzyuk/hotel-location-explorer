@@ -1,0 +1,182 @@
+[
+  {
+    "id": "berlin-1",
+    "name": "Brandenburg Gate",
+    "lat": 52.5163,
+    "lng": 13.3777,
+    "category": "sights",
+    "description": "Iconic 18th-century neoclassical monument",
+    "rating": 4.7
+  },
+  {
+    "id": "berlin-2",
+    "name": "Berlin TV Tower",
+    "lat": 52.5208,
+    "lng": 13.4094,
+    "category": "sights",
+    "description": "368m tower with observation deck and revolving restaurant",
+    "rating": 4.5
+  },
+  {
+    "id": "berlin-3",
+    "name": "Museum Island",
+    "lat": 52.5169,
+    "lng": 13.4019,
+    "category": "museum",
+    "description": "UNESCO World Heritage site with five world-renowned museums",
+    "rating": 4.8
+  },
+  {
+    "id": "berlin-4",
+    "name": "Pergamon Museum",
+    "lat": 52.5211,
+    "lng": 13.3969,
+    "category": "museum",
+    "description": "Ancient architecture and archaeological collections",
+    "rating": 4.6
+  },
+  {
+    "id": "berlin-5",
+    "name": "Berlin Hauptbahnhof",
+    "lat": 52.5250,
+    "lng": 13.3692,
+    "category": "station",
+    "description": "Main railway station and transport hub",
+    "rating": 4.2
+  },
+  {
+    "id": "berlin-6",
+    "name": "Alexanderplatz Station",
+    "lat": 52.5219,
+    "lng": 13.4132,
+    "category": "station",
+    "description": "Major public transport hub with U-Bahn, S-Bahn, and trams",
+    "rating": 4.0
+  },
+  {
+    "id": "berlin-7",
+    "name": "Friedrichstraße Station",
+    "lat": 52.5203,
+    "lng": 13.3869,
+    "category": "station",
+    "description": "Central station connecting multiple lines",
+    "rating": 3.9
+  },
+  {
+    "id": "berlin-8",
+    "name": "Potsdamer Platz Station",
+    "lat": 52.5096,
+    "lng": 13.3761,
+    "category": "station",
+    "description": "Modern underground station at bustling square",
+    "rating": 4.1
+  },
+  {
+    "id": "berlin-9",
+    "name": "Zur letzten Instanz",
+    "lat": 52.5145,
+    "lng": 13.4058,
+    "category": "food",
+    "description": "Berlin's oldest restaurant, established 1621",
+    "rating": 4.3
+  },
+  {
+    "id": "berlin-10",
+    "name": "Hofbräu Berlin",
+    "lat": 52.5219,
+    "lng": 13.4132,
+    "category": "food",
+    "description": "Traditional Bavarian beer hall and restaurant",
+    "rating": 4.2
+  },
+  {
+    "id": "berlin-11",
+    "name": "Restaurant Maximilians",
+    "lat": 52.5136,
+    "lng": 13.3886,
+    "category": "food",
+    "description": "Authentic German cuisine near Friedrichstraße",
+    "rating": 4.4
+  },
+  {
+    "id": "berlin-12",
+    "name": "The Barn Coffee Roasters",
+    "lat": 52.5295,
+    "lng": 13.4014,
+    "category": "cafe",
+    "description": "Specialty coffee roaster and cafe",
+    "rating": 4.6
+  },
+  {
+    "id": "berlin-13",
+    "name": "Einstein Kaffee",
+    "lat": 52.5062,
+    "lng": 13.3886,
+    "category": "cafe",
+    "description": "Traditional Viennese-style coffeehouse",
+    "rating": 4.3
+  },
+  {
+    "id": "berlin-14",
+    "name": "Checkpoint Charlie",
+    "lat": 52.5075,
+    "lng": 13.3903,
+    "category": "sights",
+    "description": "Former Cold War crossing point",
+    "rating": 3.8
+  },
+  {
+    "id": "berlin-15",
+    "name": "Reichstag Building",
+    "lat": 52.5186,
+    "lng": 13.3761,
+    "category": "sights",
+    "description": "Historic parliament building with glass dome",
+    "rating": 4.6
+  },
+  {
+    "id": "berlin-16",
+    "name": "East Side Gallery",
+    "lat": 52.5053,
+    "lng": 13.4397,
+    "category": "sights",
+    "description": "1.3km section of Berlin Wall with murals",
+    "rating": 4.4
+  },
+  {
+    "id": "berlin-17",
+    "name": "Natural History Museum",
+    "lat": 52.5304,
+    "lng": 13.3789,
+    "category": "museum",
+    "description": "Dinosaurs and extensive natural history collections",
+    "rating": 4.5
+  },
+  {
+    "id": "berlin-18",
+    "name": "Borchardt Restaurant",
+    "lat": 52.5144,
+    "lng": 13.3917,
+    "category": "food",
+    "description": "Upscale French-German cuisine",
+    "rating": 4.1
+  },
+  {
+    "id": "berlin-19",
+    "name": "Café am Neuen See",
+    "lat": 52.5066,
+    "lng": 13.3361,
+    "category": "cafe",
+    "description": "Lakeside beer garden in Tiergarten park",
+    "rating": 4.4
+  },
+  {
+    "id": "berlin-20",
+    "name": "Hackescher Markt Station",
+    "lat": 52.5225,
+    "lng": 13.4021,
+    "category": "station",
+    "description": "S-Bahn station in trendy neighborhood",
+    "rating": 4.0
+  }
+]
