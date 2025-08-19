@@ -12,10 +12,14 @@ interface ControlsProps {
   onModeChange: (mode: TravelMode) => void
   onTimeChange: (time: number) => void
   onCategoriesChange: (categories: POICategory[]) => void
+  isEditMode?: boolean
+  onEditModeChange?: (editMode: boolean) => void
+  onResetHotel?: () => void
+  hasCustomHotel?: boolean
 }
 
 /**
- * コントロールパネル：都市選択、移動モード、時間、POIカテゴリ
+ * コントロールパネル：都市選択、移動モード、時間、POIカテゴリ、ホテル位置編集
  */
 export default function Controls({
   city,
@@ -26,6 +30,10 @@ export default function Controls({
   onModeChange,
   onTimeChange,
   onCategoriesChange,
+  isEditMode = false,
+  onEditModeChange = () => {},
+  onResetHotel = () => {},
+  hasCustomHotel = false,
 }: ControlsProps) {
   const [localTime, setLocalTime] = useState(time)
   const [localCategories, setLocalCategories] = useState(categories)
@@ -58,6 +66,36 @@ export default function Controls({
 
   return (
     <div className="space-y-6">
+      {/* ホテル位置編集 */}
+      <div className="card">
+        <h3 className="font-semibold text-lg mb-3">Hotel Location</h3>
+        <div className="space-y-2">
+          <button
+            onClick={() => onEditModeChange(!isEditMode)}
+            className={`w-full btn ${
+              isEditMode ? 'bg-blue-600 text-white hover:bg-blue-700' : 'btn-secondary'
+            }`}
+            aria-label="Toggle edit mode"
+          >
+            {isEditMode ? '📍 Click Map to Set Location' : '✏️ Edit Hotel Location'}
+          </button>
+          {hasCustomHotel && (
+            <button
+              onClick={onResetHotel}
+              className="w-full btn btn-secondary"
+              aria-label="Reset to default hotel"
+            >
+              ↩️ Reset to Default
+            </button>
+          )}
+        </div>
+        {isEditMode && (
+          <div className="mt-2 p-2 bg-blue-50 rounded text-sm text-blue-700">
+            Click anywhere on the map to set new hotel location
+          </div>
+        )}
+      </div>
+
       {/* 都市選択 */}
       <div className="card">
         <h3 className="font-semibold text-lg mb-3">City</h3>
@@ -178,7 +216,7 @@ export default function Controls({
           className="w-full btn btn-secondary"
           aria-label="Reset filters"
         >
-          Reset
+          Reset Filters
         </button>
         <button
           onClick={shareUrl}
