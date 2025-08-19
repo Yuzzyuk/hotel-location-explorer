@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useMemo } from 'react'
-import { MapContainer, TileLayer, Marker, Popup, GeoJSON, useMap } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, GeoJSON, useMap, useMapEvents } from 'react-leaflet'
 import L from 'leaflet'
 import type { TravelMode, POI, POICategory } from '@/lib/types'
 import { generateMockIsochrone } from '@/lib/isochrones/mock'
@@ -23,6 +23,8 @@ interface MapProps {
   categories: POICategory[]
   pois: POI[]
   onFilteredPOIsChange: (pois: POI[]) => void
+  isEditMode?: boolean
+  onHotelPositionChange?: (lat: number, lng: number) => void
 }
 
 /**
@@ -37,6 +39,26 @@ function ChangeView({ center, zoom }: { center: [number, number]; zoom: number }
 }
 
 /**
+ * 地図クリックイベントを処理するコンポーネント
+ */
+function MapClickHandler({ 
+  isEditMode, 
+  onHotelPositionChange 
+}: { 
+  isEditMode: boolean
+  onHotelPositionChange: (lat: number, lng: number) => void 
+}) {
+  useMapEvents({
+    click: (e) => {
+      if (isEditMode) {
+        onHotelPositionChange(e.latlng.lat, e.latlng.lng)
+      }
+    },
+  })
+  return null
+}
+
+/**
  * メイン地図コンポーネント：isochrone表示とPOIフィルタリング
  */
 export default function Map({
@@ -46,6 +68,8 @@ export default function Map({
   categories,
   pois,
   onFilteredPOIsChange,
+  isEditMode = false,
+  onHotelPositionChange = () => {},
 }: MapProps) {
   const [isochrones, setIsochrones] = useState<FeatureCollection<Polygon> | null>(null)
   const [loading, setLoading] = useState(false)
@@ -158,6 +182,34 @@ export default function Map({
     })
   }
 
+  // ホテルアイコン（カスタム位置の場合は異なるスタイル）
+  const createHotelIcon = (isCustom: boolean) => {
+    if (!isCustom) return undefined // デフォルトアイコンを使用
+
+    return L.divIcon({
+      html: `
+        <div style="position: relative;">
+          <div style="
+            background-color: #DC2626;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          ">
+            <span style="font-size: 16px;">🏨</span>
+          </div>
+        </div>
+      `,
+      className: 'custom-hotel-icon',
+      iconSize: [32, 32],
+      iconAnchor: [16, 16],
+    })
+  }
+
   // Isochrone スタイル（色分けを改善）
   const isochroneStyle = (feature: any) => {
     const time = (feature.properties?.value || feature.properties?.time) / 60
@@ -187,6 +239,8 @@ export default function Map({
     }
   }
 
+  const isCustomHotel = hotelCoords.name === 'Custom Hotel Location'
+
   return (
     <div className="relative w-full h-full">
       {loading && (
@@ -201,10 +255,16 @@ export default function Map({
       <MapContainer
         center={[hotelCoords.lat, hotelCoords.lng]}
         zoom={13}
-        className="w-full h-full"
+        className={`w-full h-full ${isEditMode ? 'cursor-crosshair' : ''}`}
         zoomControl={true}
       >
         <ChangeView center={[hotelCoords.lat, hotelCoords.lng]} zoom={13} />
+        
+        {/* クリックハンドラー */}
+        <MapClickHandler 
+          isEditMode={isEditMode} 
+          onHotelPositionChange={onHotelPositionChange}
+        />
         
         {/* OSM タイル - 将来的に他のプロバイダに切り替え可能 */}
         <TileLayer
@@ -215,17 +275,25 @@ export default function Map({
         {/* Isochrones */}
         {isochrones && (
           <GeoJSON
-            key={`${mode}-${time}`}
+            key={`${mode}-${time}-${hotelCoords.lat}-${hotelCoords.lng}`}
             data={isochrones}
             style={isochroneStyle}
           />
         )}
 
         {/* ホテルマーカー */}
-        <Marker position={[hotelCoords.lat, hotelCoords.lng]}>
+        <Marker 
+          position={[hotelCoords.lat, hotelCoords.lng]}
+          icon={createHotelIcon(isCustomHotel)}
+        >
           <Popup>
             <div className="font-semibold text-lg">{hotelCoords.name}</div>
-            <div className="text-sm text-gray-600">4-Star Hotel</div>
+            <div className="text-sm text-gray-600">
+              {isCustomHotel ? 'Custom Location' : '4-Star Hotel'}
+            </div>
+            <div className="text-xs text-gray-500 mt-1">
+              Lat: {hotelCoords.lat.toFixed(4)}, Lng: {hotelCoords.lng.toFixed(4)}
+            </div>
           </Popup>
         </Marker>
 
