@@ -12,7 +12,7 @@ interface LegendProps {
 export default function Legend({ mode }: LegendProps) {
   const modeColors: Record<TravelMode, string> = {
     walk: '#00AA55',
-    transit: '#0066CC',
+    transit: '#0066CC', 
     taxi: '#FF6633',
   }
 
@@ -23,10 +23,10 @@ export default function Legend({ mode }: LegendProps) {
   }
 
   const timeRanges = [
-    { minutes: 5, opacity: 0.25 },
-    { minutes: 10, opacity: 0.20 },
+    { minutes: 5, opacity: 0.35 },
+    { minutes: 10, opacity: 0.25 },
     { minutes: 15, opacity: 0.15 },
-    { minutes: 20, opacity: 0.10 },
+    { minutes: 20, opacity: 0.08 },
   ]
 
   return (
@@ -63,10 +63,21 @@ export default function Legend({ mode }: LegendProps) {
 
       <div className="mt-4 pt-4 border-t border-gray-200">
         <div className="text-xs text-gray-500">
-          Isochrones show areas reachable within the specified time from the hotel.
-          {mode === 'walk' && ' Based on average walking speed of 5 km/h.'}
-          {mode === 'transit' && ' Includes walking to/from stations.'}
-          {mode === 'taxi' && ' Based on typical urban traffic conditions.'}
+          <div className="mb-2 font-semibold">Mode Colors:</div>
+          <div className="space-y-1">
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 rounded" style={{ backgroundColor: '#00AA55' }}></div>
+              <span>Walk = Green</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 rounded" style={{ backgroundColor: '#0066CC' }}></div>
+              <span>Transit = Blue</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 rounded" style={{ backgroundColor: '#FF6633' }}></div>
+              <span>Taxi = Orange</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
