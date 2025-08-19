@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useMemo } from 'react'
-import { MapContainer, TileLayer, Marker, Popup, GeoJSON, useMap, useMapEvents } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, GeoJSON, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import type { TravelMode, POI, POICategory } from '@/lib/types'
 import { generateMockIsochrone } from '@/lib/isochrones/mock'
@@ -23,8 +23,6 @@ interface MapProps {
   categories: POICategory[]
   pois: POI[]
   onFilteredPOIsChange: (pois: POI[]) => void
-  isEditMode?: boolean
-  onHotelPositionChange?: (lat: number, lng: number) => void
 }
 
 /**
@@ -39,26 +37,6 @@ function ChangeView({ center, zoom }: { center: [number, number]; zoom: number }
 }
 
 /**
- * 地図クリックイベントを処理するコンポーネント
- */
-function MapClickHandler({ 
-  isEditMode, 
-  onHotelPositionChange 
-}: { 
-  isEditMode: boolean
-  onHotelPositionChange: (lat: number, lng: number) => void 
-}) {
-  useMapEvents({
-    click: (e) => {
-      if (isEditMode) {
-        onHotelPositionChange(e.latlng.lat, e.latlng.lng)
-      }
-    },
-  })
-  return null
-}
-
-/**
  * メイン地図コンポーネント：isochrone表示とPOIフィルタリング
  */
 export default function Map({
@@ -68,8 +46,6 @@ export default function Map({
   categories,
   pois,
   onFilteredPOIsChange,
-  isEditMode = false,
-  onHotelPositionChange = () => {},
 }: MapProps) {
   const [isochrones, setIsochrones] = useState<FeatureCollection<Polygon> | null>(null)
   const [loading, setLoading] = useState(false)
@@ -79,11 +55,14 @@ export default function Map({
     const fetchIsochrones = async () => {
       setLoading(true)
       try {
-        // 環境変数チェック
-        const apiKey = process.env.NEXT_PUBLIC_ORS_API_KEY || ''
+        // 環境変数チェック（NEXT_PUBLIC_ プレフィックスが必要）
+        const apiKey = typeof window !== 'undefined' 
+          ? process.env.NEXT_PUBLIC_ORS_API_KEY || ''
+          : ''
+        
         let data: FeatureCollection<Polygon> | null = null
 
-        if (apiKey) {
+        if (apiKey && apiKey.length > 0) {
           // ORS API を試す
           try {
             data = await fetchORSIsochrone(
@@ -125,29 +104,19 @@ export default function Map({
     }
 
     fetchIsochrones()
-  }, [hotelCoords, mode])
+  }, [hotelCoords.lat, hotelCoords.lng, mode])
 
   // POI フィルタリング（isochrone内判定）
   const filteredPOIs = useMemo(() => {
     if (!isochrones || !isochrones.features.length) return []
-
-    // 選択された時間のisochrone を取得
-    const relevantIsochrone = isochrones.features.find((feature) => {
-      const featureTime = feature.properties?.value || feature.properties?.time
-      return featureTime === time * 60 // 分を秒に変換
-    })
-
-    if (!relevantIsochrone) return []
 
     // カテゴリフィルタ
     const categoryFiltered = pois.filter((poi) =>
       categories.includes(poi.category)
     )
 
-    // Isochrone 内判定（簡易版: bounding box チェック）
+    // Isochrone 内判定（簡易版: 距離ベース）
     const filtered = categoryFiltered.filter((poi) => {
-      // より正確な判定には turf.js の pointInPolygon を使用可能
-      // ここでは簡易的に距離ベースで判定
       const distance = Math.sqrt(
         Math.pow(poi.lat - hotelCoords.lat, 2) +
         Math.pow(poi.lng - hotelCoords.lng, 2)
@@ -157,7 +126,7 @@ export default function Map({
     })
 
     return filtered
-  }, [isochrones, time, categories, pois, hotelCoords])
+  }, [isochrones, time, categories, pois, hotelCoords.lat, hotelCoords.lng])
 
   // フィルタ結果を親コンポーネントに通知
   useEffect(() => {
@@ -182,37 +151,9 @@ export default function Map({
     })
   }
 
-  // ホテルアイコン（カスタム位置の場合は異なるスタイル）
-  const createHotelIcon = (isCustom: boolean) => {
-    if (!isCustom) return undefined // デフォルトアイコンを使用
-
-    return L.divIcon({
-      html: `
-        <div style="position: relative;">
-          <div style="
-            background-color: #DC2626;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: 3px solid white;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          ">
-            <span style="font-size: 16px;">🏨</span>
-          </div>
-        </div>
-      `,
-      className: 'custom-hotel-icon',
-      iconSize: [32, 32],
-      iconAnchor: [16, 16],
-    })
-  }
-
-  // Isochrone スタイル（色分けを改善）
+  // Isochrone スタイル
   const isochroneStyle = (feature: any) => {
-    const time = (feature.properties?.value || feature.properties?.time) / 60
+    const featureTime = (feature.properties?.value || feature.properties?.time) / 60
     
     // より見やすい透明度設定
     const opacityMap: Record<number, number> = {
@@ -232,21 +173,19 @@ export default function Map({
     return {
       fillColor: colors[mode],
       weight: 2,
-      opacity: 0.9,  // 境界線の不透明度を上げる
+      opacity: 0.9,
       color: colors[mode],
-      fillOpacity: feature.properties?.opacity || opacityMap[time] || 0.1,
-      dashArray: time === 5 ? '5, 5' : undefined, // 5分圏は点線
+      fillOpacity: feature.properties?.opacity || opacityMap[featureTime] || 0.1,
+      dashArray: featureTime === 5 ? '5, 5' : undefined,
     }
   }
-
-  const isCustomHotel = hotelCoords.name === 'Custom Hotel Location'
 
   return (
     <div className="relative w-full h-full">
       {loading && (
         <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-[1000] bg-white px-4 py-2 rounded-lg shadow-lg">
           <div className="flex items-center space-x-2">
-            <div className="animate-spin h-4 w-4 border-2 border-brand-blue border-t-transparent rounded-full"></div>
+            <div className="animate-spin h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
             <span className="text-sm">Loading isochrones...</span>
           </div>
         </div>
@@ -255,45 +194,31 @@ export default function Map({
       <MapContainer
         center={[hotelCoords.lat, hotelCoords.lng]}
         zoom={13}
-        className={`w-full h-full ${isEditMode ? 'cursor-crosshair' : ''}`}
+        className="w-full h-full"
         zoomControl={true}
       >
         <ChangeView center={[hotelCoords.lat, hotelCoords.lng]} zoom={13} />
         
-        {/* クリックハンドラー */}
-        <MapClickHandler 
-          isEditMode={isEditMode} 
-          onHotelPositionChange={onHotelPositionChange}
-        />
-        
-        {/* OSM タイル - 将来的に他のプロバイダに切り替え可能 */}
+        {/* OSM タイル */}
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {/* Isochrones */}
+        {/* Isochrones - keyを簡略化 */}
         {isochrones && (
           <GeoJSON
-            key={`${mode}-${time}-${hotelCoords.lat}-${hotelCoords.lng}`}
+            key={`isochrone-${mode}-${time}`}
             data={isochrones}
             style={isochroneStyle}
           />
         )}
 
         {/* ホテルマーカー */}
-        <Marker 
-          position={[hotelCoords.lat, hotelCoords.lng]}
-          icon={createHotelIcon(isCustomHotel)}
-        >
+        <Marker position={[hotelCoords.lat, hotelCoords.lng]}>
           <Popup>
             <div className="font-semibold text-lg">{hotelCoords.name}</div>
-            <div className="text-sm text-gray-600">
-              {isCustomHotel ? 'Custom Location' : '4-Star Hotel'}
-            </div>
-            <div className="text-xs text-gray-500 mt-1">
-              Lat: {hotelCoords.lat.toFixed(4)}, Lng: {hotelCoords.lng.toFixed(4)}
-            </div>
+            <div className="text-sm text-gray-600">4-Star Hotel</div>
           </Popup>
         </Marker>
 
