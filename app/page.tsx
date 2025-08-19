@@ -9,8 +9,12 @@ import Legend from '@/components/Legend'
 import PoiList from '@/components/PoiList'
 import Footer from '@/components/Footer'
 import type { City, TravelMode, POICategory, POI } from '@/lib/types'
-import berlinPOIs from '@/data/pois/berlin.json'
-import parisPOIs from '@/data/pois/paris.json'
+import berlinPOIsData from '@/data/pois/berlin.json'
+import parisPOIsData from '@/data/pois/paris.json'
+
+// 型アサーションで POI[] 型として扱う
+const berlinPOIs = berlinPOIsData as POI[]
+const parisPOIs = parisPOIsData as POI[]
 
 // Leafletは SSR に対応していないため動的インポート
 const Map = dynamic(() => import('@/components/Map'), {
