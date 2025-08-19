@@ -2,7 +2,7 @@ import type { FeatureCollection, Polygon } from 'geojson'
 import type { TravelMode } from '@/lib/types'
 
 /**
- * モックisochroneデータを生成（同心円ベース）
+ * モックisochroneデータを生成（同心円ベース・固定形状）
  */
 export function generateMockIsochrone(
   lat: number,
@@ -10,7 +10,7 @@ export function generateMockIsochrone(
   mode: TravelMode,
   times: number[] // 分単位
 ): FeatureCollection<Polygon> {
-  // 移動速度の定義 (km/h) - 現実的な速度に修正
+  // 移動速度の定義 (km/h) - 現実的な速度
   const speeds: Record<TravelMode, number> = {
     walk: 4,      // 4 km/h (歩行速度)
     transit: 20,  // 20 km/h (都市部の公共交通、待ち時間・乗り換え含む平均)
@@ -32,34 +32,33 @@ export function generateMockIsochrone(
     const lngDelta = distance / (111 * lngCorrection)
 
     // 多角形の頂点数
-    const points = 48 // より滑らかな円にするため増やす
+    const points = 48 // 滑らかな円
 
-    // 形状の変動を加える（モードごとに異なるパターン）
+    // 固定された形状パターン（ランダム要素なし）
     const coordinates = []
     for (let i = 0; i <= points; i++) {
       const angle = (i / points) * 2 * Math.PI
       
-      // モードごとに異なる変動パターン
+      // モードごとに固定の変形パターン
       let variationFactor = 1.0
       
       if (mode === 'walk') {
-        // 徒歩: ほぼ円形（どの方向も同じ速度）
-        variationFactor = 0.95 + Math.random() * 0.1
+        // 徒歩: 完全な円形
+        variationFactor = 1.0
       } else if (mode === 'transit') {
-        // 公共交通: 駅の配置により不規則
-        variationFactor = 0.85 + Math.random() * 0.3
+        // 公共交通: 駅の配置を想定した星型
+        // 8方向（45度ごと）に伸びる
+        const angleNorm = (angle % (Math.PI / 4)) / (Math.PI / 4)
+        variationFactor = 0.85 + 0.3 * (1 - Math.abs(angleNorm - 0.5) * 2)
       } else if (mode === 'taxi') {
-        // タクシー: 主要道路沿いに広がる
-        // 東西南北方向（主要道路）はより遠くまで
+        // タクシー: 主要道路沿い（十字型に伸びる）
         const isMainDirection = 
-          Math.abs(Math.sin(angle)) < 0.2 || 
-          Math.abs(Math.cos(angle)) < 0.2
-        variationFactor = isMainDirection 
-          ? 1.1 + Math.random() * 0.1
-          : 0.9 + Math.random() * 0.1
+          Math.abs(Math.sin(angle)) < 0.3 || 
+          Math.abs(Math.cos(angle)) < 0.3
+        variationFactor = isMainDirection ? 1.15 : 0.95
       }
       
-      // 楕円の座標計算
+      // 座標計算（固定値）
       const pointLat = lat + latDelta * Math.sin(angle) * variationFactor
       const pointLng = lng + lngDelta * Math.cos(angle) * variationFactor
       
@@ -102,7 +101,7 @@ export function generateMockIsochrone(
 }
 
 /**
- * POIがisochrone内にあるかチェック（簡易版）
+ * POIがisochrone内にあるかチェック（改善版）
  */
 export function isPointInIsochrone(
   pointLat: number,
@@ -145,8 +144,3 @@ export function getReachableDistance(mode: TravelMode, minutes: number): string 
   const distance = (speeds[mode] * minutes) / 60
   return `${mode}: ${distance.toFixed(1)}km in ${minutes}min (${speeds[mode]}km/h)`
 }
-
-// 将来の拡張: より正確な形状生成
-// - 道路ネットワークデータの考慮
-// - 地形（川、公園など）の考慮
-// - 実際の交通データとの統合
