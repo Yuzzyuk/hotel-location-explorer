@@ -26,7 +26,7 @@ const Map = dynamic(() => import('@/components/Map'), {
   ),
 })
 
-const DEFAULT_HOTELS = {
+const HOTEL_COORDS = {
   berlin: { lat: 52.5200, lng: 13.4050, name: 'Hotel Berlin Central' },
   paris: { lat: 48.8566, lng: 2.3522, name: 'Hotel Paris Opera' },
 }
@@ -55,14 +55,6 @@ function HomePage() {
       : ['sights', 'station']
   })
 
-  // カスタムホテル位置の状態
-  const [customHotel, setCustomHotel] = useState<{
-    lat: number
-    lng: number
-    name: string
-  } | null>(null)
-  const [isEditMode, setIsEditMode] = useState(false)
-
   const [filteredPOIs, setFilteredPOIs] = useState<POI[]>([])
 
   // POI データの取得
@@ -75,53 +67,10 @@ function HomePage() {
     params.set('mode', mode)
     params.set('time', time.toString())
     params.set('cat', categories.join(','))
-    
-    // カスタムホテル位置もURLに含める
-    if (customHotel) {
-      params.set('hlat', customHotel.lat.toFixed(4))
-      params.set('hlng', customHotel.lng.toFixed(4))
-    }
-    
     router.push(`?${params.toString()}`, { scroll: false })
-  }, [city, mode, time, categories, customHotel, router])
+  }, [city, mode, time, categories, router])
 
-  // URLからカスタムホテル位置を復元
-  useEffect(() => {
-    const hlat = searchParams.get('hlat')
-    const hlng = searchParams.get('hlng')
-    if (hlat && hlng) {
-      setCustomHotel({
-        lat: parseFloat(hlat),
-        lng: parseFloat(hlng),
-        name: 'Custom Hotel Location'
-      })
-    }
-  }, [searchParams])
-
-  // 現在のホテル座標（カスタムまたはデフォルト）
-  const hotelCoords = customHotel || DEFAULT_HOTELS[city]
-
-  // 都市変更時にカスタムホテルをリセット
-  const handleCityChange = (newCity: City) => {
-    setCity(newCity)
-    setCustomHotel(null)
-    setIsEditMode(false)
-  }
-
-  // カスタムホテル位置の設定
-  const handleHotelPositionChange = (lat: number, lng: number) => {
-    setCustomHotel({
-      lat,
-      lng,
-      name: 'Custom Hotel Location'
-    })
-  }
-
-  // デフォルトに戻す
-  const resetToDefaultHotel = () => {
-    setCustomHotel(null)
-    setIsEditMode(false)
-  }
+  const hotelCoords = HOTEL_COORDS[city]
 
   return (
     <div className="flex flex-col h-screen">
@@ -135,14 +84,10 @@ function HomePage() {
             mode={mode}
             time={time}
             categories={categories}
-            onCityChange={handleCityChange}
+            onCityChange={setCity}
             onModeChange={setMode}
             onTimeChange={setTime}
             onCategoriesChange={setCategories}
-            isEditMode={isEditMode}
-            onEditModeChange={setIsEditMode}
-            onResetHotel={resetToDefaultHotel}
-            hasCustomHotel={!!customHotel}
           />
           <div className="mt-6">
             <Legend mode={mode} />
@@ -151,14 +96,6 @@ function HomePage() {
 
         {/* 中央: 地図 */}
         <div className="flex-1 relative">
-          {isEditMode && (
-            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-[1000] bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg">
-              <div className="flex items-center space-x-2">
-                <span>📍</span>
-                <span className="text-sm font-medium">Click on the map to set hotel location</span>
-              </div>
-            </div>
-          )}
           <Map
             hotelCoords={hotelCoords}
             mode={mode}
@@ -166,8 +103,6 @@ function HomePage() {
             categories={categories}
             pois={allPOIs}
             onFilteredPOIsChange={setFilteredPOIs}
-            isEditMode={isEditMode}
-            onHotelPositionChange={handleHotelPositionChange}
           />
         </div>
 
