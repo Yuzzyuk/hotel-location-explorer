@@ -1,6 +1,5 @@
-import type { NextConfig } from 'next'
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   // 将来的な画像最適化やAPI Routes設定をここに追加可能
@@ -12,4 +11,4 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default nextConfig
+module.exports = nextConfig
