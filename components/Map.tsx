@@ -158,22 +158,32 @@ export default function Map({
     })
   }
 
-  // Isochrone スタイル
+  // Isochrone スタイル（色分けを改善）
   const isochroneStyle = (feature: any) => {
     const time = (feature.properties?.value || feature.properties?.time) / 60
-    const opacity = 0.15 - (time - 5) * 0.02
+    
+    // より見やすい透明度設定
+    const opacityMap: Record<number, number> = {
+      5: 0.35,
+      10: 0.25,
+      15: 0.15,
+      20: 0.08
+    }
+    
+    // モードごとの色分け
     const colors: Record<TravelMode, string> = {
-      walk: '#00AA55',
-      transit: '#0066CC',
-      taxi: '#FF6633',
+      walk: '#00AA55',    // 緑
+      transit: '#0066CC', // 青  
+      taxi: '#FF6633',    // オレンジ
     }
 
     return {
       fillColor: colors[mode],
       weight: 2,
-      opacity: 0.8,
+      opacity: 0.9,  // 境界線の不透明度を上げる
       color: colors[mode],
-      fillOpacity: opacity,
+      fillOpacity: feature.properties?.opacity || opacityMap[time] || 0.1,
+      dashArray: time === 5 ? '5, 5' : undefined, // 5分圏は点線
     }
   }
 
