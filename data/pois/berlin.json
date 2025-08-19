@@ -178,5 +178,275 @@
     "category": "station",
     "description": "S-Bahn station in trendy neighborhood",
     "rating": 4.0
+  },
+  {
+    "id": "berlin-21",
+    "name": "Berlin Cathedral",
+    "lat": 52.5191,
+    "lng": 13.4013,
+    "category": "sights",
+    "description": "Baroque cathedral with stunning dome",
+    "rating": 4.5
+  },
+  {
+    "id": "berlin-22",
+    "name": "Victory Column",
+    "lat": 52.5145,
+    "lng": 13.3501,
+    "category": "sights",
+    "description": "67m monument with viewing platform",
+    "rating": 4.3
+  },
+  {
+    "id": "berlin-23",
+    "name": "Gendarmenmarkt",
+    "lat": 52.5138,
+    "lng": 13.3917,
+    "category": "sights",
+    "description": "Beautiful square with twin churches",
+    "rating": 4.6
+  },
+  {
+    "id": "berlin-24",
+    "name": "DDR Museum",
+    "lat": 52.5196,
+    "lng": 13.4027,
+    "category": "museum",
+    "description": "Interactive museum about life in East Germany",
+    "rating": 4.2
+  },
+  {
+    "id": "berlin-25",
+    "name": "Jewish Museum Berlin",
+    "lat": 52.5023,
+    "lng": 13.3954,
+    "category": "museum",
+    "description": "Jewish history and culture in Germany",
+    "rating": 4.5
+  },
+  {
+    "id": "berlin-26",
+    "name": "Alte Nationalgalerie",
+    "lat": 52.5195,
+    "lng": 13.3988,
+    "category": "museum",
+    "description": "19th-century art collection",
+    "rating": 4.4
+  },
+  {
+    "id": "berlin-27",
+    "name": "Katz Orange",
+    "lat": 52.5263,
+    "lng": 13.4035,
+    "category": "food",
+    "description": "Modern German cuisine in former brewery",
+    "rating": 4.5
+  },
+  {
+    "id": "berlin-28",
+    "name": "Augustiner-Bräu Berlin",
+    "lat": 52.5147,
+    "lng": 13.3872,
+    "category": "food",
+    "description": "Traditional Bavarian restaurant",
+    "rating": 4.3
+  },
+  {
+    "id": "berlin-29",
+    "name": "Curry 36",
+    "lat": 52.4939,
+    "lng": 13.3869,
+    "category": "food",
+    "description": "Famous currywurst stand",
+    "rating": 4.2
+  },
+  {
+    "id": "berlin-30",
+    "name": "Markthalle Neun",
+    "lat": 52.5022,
+    "lng": 13.4307,
+    "category": "food",
+    "description": "Historic market hall with food vendors",
+    "rating": 4.4
+  },
+  {
+    "id": "berlin-31",
+    "name": "Five Elephant Coffee",
+    "lat": 52.4895,
+    "lng": 13.3905,
+    "category": "cafe",
+    "description": "Specialty coffee and cheesecake",
+    "rating": 4.5
+  },
+  {
+    "id": "berlin-32",
+    "name": "Father Carpenter Coffee",
+    "lat": 52.5343,
+    "lng": 13.4234,
+    "category": "cafe",
+    "description": "Australian-style coffee and brunch",
+    "rating": 4.4
+  },
+  {
+    "id": "berlin-33",
+    "name": "Bonanza Coffee",
+    "lat": 52.5342,
+    "lng": 13.4185,
+    "category": "cafe",
+    "description": "Specialty coffee roastery",
+    "rating": 4.3
+  },
+  {
+    "id": "berlin-34",
+    "name": "Café Einstein Stammhaus",
+    "lat": 52.5062,
+    "lng": 13.3312,
+    "category": "cafe",
+    "description": "Classic Viennese coffeehouse in villa",
+    "rating": 4.5
+  },
+  {
+    "id": "berlin-35",
+    "name": "Brandenburger Tor Station",
+    "lat": 52.5163,
+    "lng": 13.3811,
+    "category": "station",
+    "description": "S-Bahn station near Brandenburg Gate",
+    "rating": 4.1
+  },
+  {
+    "id": "berlin-36",
+    "name": "Zoologischer Garten Station",
+    "lat": 52.5070,
+    "lng": 13.3317,
+    "category": "station",
+    "description": "Major west Berlin transport hub",
+    "rating": 4.0
+  },
+  {
+    "id": "berlin-37",
+    "name": "Stadtmitte Station",
+    "lat": 52.5115,
+    "lng": 13.3899,
+    "category": "station",
+    "description": "U-Bahn station in city center",
+    "rating": 3.9
+  },
+  {
+    "id": "berlin-38",
+    "name": "Unter den Linden Station",
+    "lat": 52.5172,
+    "lng": 13.3892,
+    "category": "station",
+    "description": "U-Bahn station on famous boulevard",
+    "rating": 4.0
+  },
+  {
+    "id": "berlin-39",
+    "name": "Memorial to the Murdered Jews",
+    "lat": 52.5139,
+    "lng": 13.3789,
+    "category": "sights",
+    "description": "Holocaust memorial with 2,711 concrete slabs",
+    "rating": 4.4
+  },
+  {
+    "id": "berlin-40",
+    "name": "Tiergarten Park",
+    "lat": 52.5145,
+    "lng": 13.3501,
+    "category": "sights",
+    "description": "Large urban park in central Berlin",
+    "rating": 4.5
+  },
+  {
+    "id": "berlin-41",
+    "name": "Topography of Terror",
+    "lat": 52.5066,
+    "lng": 13.3838,
+    "category": "museum",
+    "description": "Documentation center on Nazi crimes",
+    "rating": 4.4
+  },
+  {
+    "id": "berlin-42",
+    "name": "Bode Museum",
+    "lat": 52.5217,
+    "lng": 13.3958,
+    "category": "museum",
+    "description": "Byzantine art and sculpture collection",
+    "rating": 4.3
+  },
+  {
+    "id": "berlin-43",
+    "name": "Restaurant Simon Taxacher",
+    "lat": 52.5111,
+    "lng": 13.3761,
+    "category": "food",
+    "description": "Michelin-starred Austrian cuisine",
+    "rating": 4.7
+  },
+  {
+    "id": "berlin-44",
+    "name": "Lutter & Wegner",
+    "lat": 52.5128,
+    "lng": 13.3917,
+    "category": "food",
+    "description": "Historic restaurant since 1811",
+    "rating": 4.3
+  },
+  {
+    "id": "berlin-45",
+    "name": "Distrikt Coffee",
+    "lat": 52.5282,
+    "lng": 13.4013,
+    "category": "cafe",
+    "description": "Trendy coffee shop in Mitte",
+    "rating": 4.2
+  },
+  {
+    "id": "berlin-46",
+    "name": "St. Oberholz Coffee",
+    "lat": 52.5328,
+    "lng": 13.4014,
+    "category": "cafe",
+    "description": "Coffee and coworking space",
+    "rating": 4.0
+  },
+  {
+    "id": "berlin-47",
+    "name": "Mohrenstraße Station",
+    "lat": 52.5113,
+    "lng": 13.3845,
+    "category": "station",
+    "description": "U-Bahn station near government quarter",
+    "rating": 3.8
+  },
+  {
+    "id": "berlin-48",
+    "name": "Französische Straße Station",
+    "lat": 52.5148,
+    "lng": 13.3884,
+    "category": "station",
+    "description": "U-Bahn station on U6 line",
+    "rating": 3.9
+  },
+  {
+    "id": "berlin-49",
+    "name": "Humboldt Forum",
+    "lat": 52.5178,
+    "lng": 13.4026,
+    "category": "museum",
+    "description": "Reconstructed palace with museums",
+    "rating": 4.1
+  },
+  {
+    "id": "berlin-50",
+    "name": "Berliner Dom Café",
+    "lat": 52.5186,
+    "lng": 13.4009,
+    "category": "cafe",
+    "description": "Café in the Berlin Cathedral",
+    "rating": 4.1
   }
 ]
