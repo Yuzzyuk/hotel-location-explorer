@@ -10,11 +10,11 @@ export function generateMockIsochrone(
   mode: TravelMode,
   times: number[] // 分単位
 ): FeatureCollection<Polygon> {
-  // 移動速度の定義 (km/h)
+  // 移動速度の定義 (km/h) - 現実的な速度に修正
   const speeds: Record<TravelMode, number> = {
-    walk: 5, // 5 km/h
-    transit: 15, // 15 km/h (平均、待ち時間含む)
-    taxi: 25, // 25 km/h (都市部の平均)
+    walk: 4,      // 4 km/h (歩行速度)
+    transit: 20,  // 20 km/h (都市部の公共交通、待ち時間・乗り換え含む平均)
+    taxi: 35,     // 35 km/h (都市部の車、渋滞考慮)
   }
 
   const speed = speeds[mode]
@@ -32,29 +32,46 @@ export function generateMockIsochrone(
     const lngDelta = distance / (111 * lngCorrection)
 
     // 多角形の頂点数
-    const points = 32
+    const points = 48 // より滑らかな円にするため増やす
 
-    // 楕円形の多角形を生成（より自然な形状）
+    // 形状の変動を加える（モードごとに異なるパターン）
     const coordinates = []
     for (let i = 0; i <= points; i++) {
       const angle = (i / points) * 2 * Math.PI
       
-      // ランダムな変動を加えて自然な形に
-      const randomFactor = 0.9 + Math.random() * 0.2
+      // モードごとに異なる変動パターン
+      let variationFactor = 1.0
+      
+      if (mode === 'walk') {
+        // 徒歩: ほぼ円形（どの方向も同じ速度）
+        variationFactor = 0.95 + Math.random() * 0.1
+      } else if (mode === 'transit') {
+        // 公共交通: 駅の配置により不規則
+        variationFactor = 0.85 + Math.random() * 0.3
+      } else if (mode === 'taxi') {
+        // タクシー: 主要道路沿いに広がる
+        // 東西南北方向（主要道路）はより遠くまで
+        const isMainDirection = 
+          Math.abs(Math.sin(angle)) < 0.2 || 
+          Math.abs(Math.cos(angle)) < 0.2
+        variationFactor = isMainDirection 
+          ? 1.1 + Math.random() * 0.1
+          : 0.9 + Math.random() * 0.1
+      }
       
       // 楕円の座標計算
-      const pointLat = lat + latDelta * Math.sin(angle) * randomFactor
-      const pointLng = lng + lngDelta * Math.cos(angle) * randomFactor
+      const pointLat = lat + latDelta * Math.sin(angle) * variationFactor
+      const pointLng = lng + lngDelta * Math.cos(angle) * variationFactor
       
       coordinates.push([pointLng, pointLat])
     }
 
-    // 透明度を時間に応じて設定（よりはっきりした違い）
+    // 透明度を時間に応じて設定
     const opacityMap: Record<number, number> = {
-      5: 0.35,
-      10: 0.25,
-      15: 0.15,
-      20: 0.08
+      5: 0.40,
+      10: 0.30,
+      15: 0.20,
+      20: 0.10
     }
 
     return {
@@ -67,7 +84,9 @@ export function generateMockIsochrone(
         value: minutes * 60, // 秒に変換
         time: minutes * 60,
         mode: mode,
-        isMock: true, // モックデータであることを示すフラグ
+        speed: speed,
+        distance: distance.toFixed(1),
+        isMock: true,
         opacity: opacityMap[minutes] || 0.1,
       },
     }
@@ -93,10 +112,11 @@ export function isPointInIsochrone(
   mode: TravelMode,
   minutes: number
 ): boolean {
+  // 修正された速度
   const speeds: Record<TravelMode, number> = {
-    walk: 5,
-    transit: 15,
-    taxi: 25,
+    walk: 4,
+    transit: 20,
+    taxi: 35,
   }
 
   const speed = speeds[mode]
@@ -112,6 +132,18 @@ export function isPointInIsochrone(
   const distance = Math.sqrt(latDistance ** 2 + lngDistance ** 2)
 
   return distance <= maxDistance
+}
+
+// デバッグ用: 各モードの到達距離を出力
+export function getReachableDistance(mode: TravelMode, minutes: number): string {
+  const speeds: Record<TravelMode, number> = {
+    walk: 4,
+    transit: 20,
+    taxi: 35,
+  }
+  
+  const distance = (speeds[mode] * minutes) / 60
+  return `${mode}: ${distance.toFixed(1)}km in ${minutes}min (${speeds[mode]}km/h)`
 }
 
 // 将来の拡張: より正確な形状生成
