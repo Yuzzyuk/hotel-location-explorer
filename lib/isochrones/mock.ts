@@ -23,7 +23,7 @@ export function generateMockIsochrone(
   const latRad = (lat * Math.PI) / 180
   const lngCorrection = Math.cos(latRad)
 
-  const features = times.map((minutes) => {
+  const features = times.map((minutes, index) => {
     // 距離計算 (km)
     const distance = (speed * minutes) / 60
 
@@ -49,6 +49,14 @@ export function generateMockIsochrone(
       coordinates.push([pointLng, pointLat])
     }
 
+    // 透明度を時間に応じて設定（よりはっきりした違い）
+    const opacityMap: Record<number, number> = {
+      5: 0.35,
+      10: 0.25,
+      15: 0.15,
+      20: 0.08
+    }
+
     return {
       type: 'Feature' as const,
       geometry: {
@@ -60,6 +68,7 @@ export function generateMockIsochrone(
         time: minutes * 60,
         mode: mode,
         isMock: true, // モックデータであることを示すフラグ
+        opacity: opacityMap[minutes] || 0.1,
       },
     }
   })
